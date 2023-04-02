@@ -110,9 +110,21 @@ async function getAll() {
   return rows;
 }
 
+// Adiona mais 7 dias para devolução
+async function extendLending(lending_id) {
+  const conn = await db.connect();
+
+const sql = `UPDATE tbl_lending SET return_prediction = (SELECT NOW() + INTERVAL 7 DAY) WHERE lending_code = ${lending_id}`;
+
+  await conn.query(sql);
+
+  conn.end();
+}
+
 export default {
   createLending,
   returnBook,
   getAllNotReturned,
   getAll,
+  extendLending,
 };

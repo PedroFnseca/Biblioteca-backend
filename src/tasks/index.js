@@ -8,8 +8,8 @@ async function execTask(){
 
   try {
     await applyPenalty();
-    // await warningLending();
-    // await checkRecoveryToken();
+    await warningLending();
+    await checkRecoveryToken();
 
     console.log("Execução de TASK: ", new Date() - start + "ms");
   }catch (error) {

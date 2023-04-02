@@ -26,7 +26,11 @@ async function welcomeUser(
 
   const subject = "Empréstimo realizado!";
 
-  await sendEmail(to, subject, html);
+  try{
+    await sendEmail(to, subject, html);
+  } catch (error) {
+    console.log(error.message);
+  }
 }
 
 export default welcomeUser;

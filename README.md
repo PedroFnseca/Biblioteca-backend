@@ -241,6 +241,10 @@
 
 #### Todos os empréstimos `.../lending/all`
 
+> ### Método Patch 📝
+
+#### Renovar empréstimo `.../lending/extendlending/?id=id-emprestimo`
+
 #
 
 # Rota de Relátório 📄

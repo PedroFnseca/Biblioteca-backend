@@ -121,7 +121,7 @@ SELECT a.book_name "Título", a.book_tombo "Tombo", a.book_position "Posição",
 
 # Todos os alunos com quantidade de livros pendentes e sem emprestimo
 CREATE VIEW VW_all_users_with_lending AS
-SELECT a.user_name, a.user_course, a.user_email, a.user_phone, a.user_cpf, a.user_type,
+SELECT a.user_name, a.user_course, a.user_email, a.user_phone, a.user_cpf, a.user_type, a.user_code,
 			 COUNT(b.lending_code) as count
 	from tbl_user a
 		left join tbl_lending b on a.user_code = b.FK_user

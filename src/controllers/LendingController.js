@@ -122,4 +122,34 @@ router.get("/all", async (req, res, next) => {
   }
 });
 
+// Endpoint: /extendlending (PATCH)
+// Descrição: Aumenta em 7 dias o empréstimo de livro
+router.patch(
+  "/extendlending",
+  async (req, res, next) => {
+    const { id } = req.query
+
+    if(!id) {
+      return res.status(400).json({
+        message: "Lending id is required",
+      });
+    }
+
+    try {
+      await db.extendLending(id);
+
+      res.status(200).json({
+        message: "Lending extended successfully!",
+      });
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({
+        DatabaseError: error.message,
+      });
+    } finally{
+      next();
+    }
+  }
+);
+
 export default router;

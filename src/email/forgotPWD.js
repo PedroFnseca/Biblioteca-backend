@@ -11,5 +11,9 @@ export default function(
     <p id="code-pwd">${recovery_token}</p>
   `
 
-  return emailTemplate(title, user_name, message);
+  try{
+    return emailTemplate(title, user_name, message);
+  } catch(err){
+    console.log(err.message);
+  }
 }
