@@ -29,32 +29,37 @@ async function getCloseToDate() {
 
 // Para cara emprestimo que está para vencer encontrado ele envia email para o usuário
 export default async function(){
-  const closeToDate = await getCloseToDate();
 
-  if (closeToDate.length === 0) return;
+  try {
+    const closeToDate = await getCloseToDate();
 
-  for (const row of closeToDate) {
-    // Formata a data de: 2022-10-20T00:00:00.000Z para: 20/10/2022
-    const return_prediction_formatted = row.return_prediction
-      .toISOString()
-      .split("T")[0]
-      .split("-")
-      .reverse()
-      .join("/");
-
-    // Formata a data de: 2022-10-20T00:00:00.000Z para: Segunda-feira
-    const return_prediction_day = new Date(
-      row.return_prediction
-    ).toLocaleDateString("pt-BR", { weekday: "long" });
-
-    const email = closeToDateEmail(
-      row.user_name,
-      row.book_name,
-      return_prediction_formatted,
-      return_prediction_day,
-      row.lending_code
-    );
-
-    sendMail(row.user_email, "Empréstimo próximo ao vencimento", email);
+    if (closeToDate.length === 0) return;
+  
+    for (const row of closeToDate) {
+      // Formata a data de: 2022-10-20T00:00:00.000Z para: 20/10/2022
+      const return_prediction_formatted = row.return_prediction
+        .toISOString()
+        .split("T")[0]
+        .split("-")
+        .reverse()
+        .join("/");
+  
+      // Formata a data de: 2022-10-20T00:00:00.000Z para: Segunda-feira
+      const return_prediction_day = new Date(
+        row.return_prediction
+      ).toLocaleDateString("pt-BR", { weekday: "long" });
+  
+      const email = closeToDateEmail(
+        row.user_name,
+        row.book_name,
+        return_prediction_formatted,
+        return_prediction_day,
+        row.lending_code
+      );
+  
+      sendMail(row.user_email, "Empréstimo próximo ao vencimento", email);
+    }
+  } catch (error) {
+    console.error(error)
   }
 }

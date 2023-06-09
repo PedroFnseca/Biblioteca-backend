@@ -17,11 +17,16 @@ export default async function(){
   const lendings = await getOverdue();
 
   if (lendings.length === 0) return;
-
+  
   const conn = await db.connect();
-  for (const lending of lendings) {
-    await conn.query("CALL SP_lending_penalty(?)", lending.lending_code);
-  }
 
-  conn.end();
+  try {
+    for (const lending of lendings) {
+      await conn.query("CALL SP_lending_penalty(?)", lending.lending_code);
+    }
+  } catch (error) {
+    // console.error(error)
+  } finally {
+    conn.end();
+  }
 }

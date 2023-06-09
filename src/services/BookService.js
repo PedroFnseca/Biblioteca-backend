@@ -50,22 +50,7 @@ async function insertBook(data) {
 async function getAllBooks() {
   const conn = await db.connect();
 
-  const start = new Date()
-
-  // await conn.query("call SP_create_tempTable_loadBooks()");
-  // const [rows] = await conn.query(`
-  //     SELECT a.book_code, a.book_isbn, a.book_cdd, a.book_name, a.book_language, a.category_name, 
-  //            a.release_year, a.book_author, a.book_edition, a.book_position, a.book_tombo, 
-  //            b.quantity_total, b.quantity_stopped, b.quantity_circulation
-  //     FROM temp_books a
-  //       join temp_quantity b on a.book_code = b.FK_book;`
-  // )
-
-  // conn.query("call SP_drop_tempTable_loadBooks()");
-
   const [rows] = await conn.query("SELECT * FROM VW_all_books");
-
-  console.log("Execução de select: ", new Date() - start + "ms");
 
   conn.end();
   return rows;
