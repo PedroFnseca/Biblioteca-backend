@@ -1,5 +1,6 @@
 import db from "../database/connection.js";
 import dateFormat from "../utils/DateFormat.js";
+import emailLending from "../email/lending.js";
 
 // Realiza o emprestimo de livros
 async function createLending(data) {
@@ -52,6 +53,46 @@ async function createLending(data) {
 
   await conn.query(sqlLending, values);
   await conn.query(sqlQuantity, book_id);
+
+  // coleta o email do usuario, nome do usuario, nome do livro e data de devolução usando subqueries
+  const sqlEmail = `
+  SELECT
+    u.user_email AS user_email,
+    u.user_name AS user_name,
+    b.book_name AS book_name,
+    l.return_prediction AS return_date,
+    l.lending_code AS lending_code
+  FROM
+    tbl_lending l
+    JOIN tbl_user u ON u.user_code = l.FK_user
+    JOIN tbl_book b ON b.book_code = l.FK_book
+  WHERE
+    l.FK_user = ?
+    AND l.FK_book = ?
+    AND l.FK_librarian = ?
+  `
+  const valuesEmail = [user_id, book_id, librarian_id];
+
+  const [ rowsEmail ] = await conn.query(sqlEmail, valuesEmail);
+
+  const day_week = new Date(rowsEmail[0].return_date).toLocaleString("pt-BR", {
+    weekday: "long",
+  });
+
+  const name = rowsEmail[0].user_name.split(" ")[0].replace(/^\w/, (c) =>
+    c.toUpperCase()
+  );
+
+  const emailData = {
+    name: name,
+    to: rowsEmail[0].user_email,
+    book_name: rowsEmail[0].book_name,
+    lending_id: rowsEmail[0].lending_code,
+    return_prediction: dateFormat(rowsEmail[0].return_date),
+    day_week: day_week,
+  }
+
+  emailLending(emailData);
 
   conn.end();
 }
